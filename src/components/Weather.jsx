@@ -6,7 +6,7 @@ const Weather = () => {
   const [cordData, setCordData] = useState([]);
   const [query, setQuery] = useState("");
   const [lan, setLan] = useState({});
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(0);
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
@@ -79,8 +79,8 @@ const Weather = () => {
     return day;
   }
 
-  const dailyCardClick = (e) => {
-    setActive((current) => !current);
+  const dailyCardClick = (index) => {
+    setActive(index);
   };
 
   // Handeling form submit
@@ -89,6 +89,7 @@ const Weather = () => {
     gettingOneCallData();
     gettingDetails();
     gettingLanLon();
+    console.log("click");
   };
 
   return (
@@ -108,17 +109,19 @@ const Weather = () => {
             {/* <h1>{lan.lon} {lan.lat}</h1> */}
             <section className="top">
               {/* <h1>
-            {data.name + ","} {data.sys?.country}
+            {data.name + ","} {data.sys?.country} 
           </h1> */}
-              {cordData.daily.map((e) => (
+              {cordData.daily.map((e, i) => (
+                // onClick={this.handleOnClick.bind(this, index, this.props)}
+                // className = {this.state.activeIndex === index ? "active" : "unactive"}
                 <div
-                  className="single-daily-card"
-                  onClick={(e) => dailyCardClick(e)}
-                  style={{
-                    backgroundColor: active ? "#fffdf7" : "#fff",
-                    border: active ? "3px solid #00a6fa" : null,
-                    transition: "0.6s ease",
-                  }}
+                  key={e.dt}
+                  className={
+                    active === i
+                      ? "clicked-single-daily-card"
+                      : "single-daily-card"
+                  }
+                  onClick={() => dailyCardClick(i)}
                 >
                   <p>{displayDate(e.dt)}</p>
                   <div className="daily-temp">
@@ -136,7 +139,7 @@ const Weather = () => {
               ))}
             </section>
 
-            <section className="middle">
+            <section className="bottom">
               <div className="current-temp-img">
                 <strong>{Math.round(cordData.current.feels_like)}°C</strong>
                 <div className="current-img">
@@ -146,12 +149,11 @@ const Weather = () => {
                   />
                 </div>
               </div>
+
               <div>
                 <h1>Graph</h1>
               </div>
-            </section>
 
-            <section className="bottom">
               <div className="hum-Pre">
                 <div className="pressure">
                   <strong>Pressure</strong>
@@ -164,17 +166,24 @@ const Weather = () => {
               </div>
 
               <div className="sun-SetRise">
-                <p>
-                  {new Date(cordData.current.sunrise * 1e3)
-                    .toLocaleTimeString()
-                    .slice(0, -6) + "am"}
-                </p>
-                <p>
-                  {new Date(cordData.current.sunset * 1e3)
-                    .toLocaleTimeString()
-                    .slice(0, -6) + "pm"}
-                </p>
+                <div className="sunrise">
+                  <strong>Sunrise</strong>
+                  <p>
+                    {new Date(cordData.current.sunrise * 1e3)
+                      .toLocaleTimeString()
+                      .slice(0, -6) + "am"}
+                  </p>
+                </div>
+                <div className="sunset">
+                  <strong>Sunset</strong>
+                  <p>
+                    {new Date(cordData.current.sunset * 1e3)
+                      .toLocaleTimeString()
+                      .slice(0, -6) + "pm"}
+                  </p>
+                </div>
               </div>
+
               <div>
                 <p>Graph</p>
               </div>

@@ -40,8 +40,23 @@ main .top {
    justify-content: center;
    padding: 7px 20px;
     gap: 10px;
-    border: 1px solid red;
 }
+
+.top .clicked-single-daily-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7px 20px;
+     gap: 10px;
+     border: 3px solid #00a6fa;
+     background-color: #fffdf7; 
+     animation: show 2s;
+}
+
+@keyframes show {
+    0% {opacity: 0.7;}
+    100% {opacity: 1;}
+  }
 
 .top .daily-temp{
     display: flex;
@@ -49,21 +64,22 @@ main .top {
     /* border: 1px solid red; */
 }
 
-/* Middle Section */
-.middle{
-    padding: 5px 10px;
+
+
+/* Bottom Section */
+main .bottom{
+    margin-top: 20px;
     display: flex;
-    gap: 10px;
+    gap: 20px;
     flex-direction: column;
-    /* border: 1px solid red; */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px 20px 10px;
+    border-radius: 5px;
 }
 
-.middle strong{
-    font-size: 30px;
-    font-weight: 700;
-}
 
-.middle .current-temp-img{
+
+.current-temp-img{
     display: flex;
     justify-content: start;
     align-items: center;
@@ -78,13 +94,6 @@ main .top {
     /* border: 1px solid red; */
 }
 
-
-/* Bottom Section */
-main .bottom{
-    display: flex;
-    flex-direction: column;
-}
-
  .hum-Pre{
     display: flex;
     justify-content: space-between;
@@ -94,7 +103,6 @@ main .bottom{
 .humidity, .pressure{
     background-color: #f3fbff;
     width: 49.5%;
-    border: 1px solid red;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -110,4 +118,19 @@ main .bottom{
 .bottom .sun-SetRise{
     display: flex;
     justify-content: space-between;
+}
+
+.sunrise, .sunset{
+    display: flex;
+    flex-direction: column;
+}
+
+.sunrise p, .sunset p{
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.current-temp-img strong{
+    font-size: 30px;
+    font-weight: 700;
 }
