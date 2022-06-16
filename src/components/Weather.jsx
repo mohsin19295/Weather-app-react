@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import GetUserLocation from "./GetUserLocation";
 import "./weather.css";
 
 const Weather = () => {
@@ -7,6 +8,7 @@ const Weather = () => {
   const [query, setQuery] = useState("");
   const [lan, setLan] = useState({});
   const [active, setActive] = useState(0);
+  const local = GetUserLocation();
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
@@ -14,45 +16,47 @@ const Weather = () => {
   };
 
   // Getting Onecall Data
-  function gettingOneCallData() {
+  useEffect(() => {
     fetch(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${lan?.lat}&lon=${lan?.lon}&units=metric&exclude=hourly,minutely&appid=${weatherAPI.key}`
     )
       .then((res) => res.json())
       .then((res) => {
         setCordData(res);
-        console.log("cordData:", res);
+        console.log("onecall:", res);
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  }, [lan?.lat, lan?.lon]);
 
   // For Lattitude and Longitude
-  function gettingLanLon() {
+  useEffect(() => {
     fetch(`${weatherAPI.baseUrl}q=${query}&appid=${weatherAPI.key}`)
       .then((res) => res.json())
       .then((res) => {
-        console.log("cord:", res.coord);
+        console.log("latAndLon:", res.coord);
         setLan(res.coord);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, [query]);
 
-  //   gettingOneCallData();
-  function gettingDetails() {
-    fetch(`${weatherAPI.baseUrl}q=${query}&appid=${weatherAPI.key}`)
+  //  For getting One CallData;
+  useEffect(() => {
+    fetch(
+      `${weatherAPI.baseUrl}q=${query}&units=metric&exclude=hourly,minutely&appid=${weatherAPI.key}`
+    )
       .then((res) => res.json())
       .then((res) => {
         setData(res);
-        console.log(res);
+        console.log("details", res);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, [query]);
 
   // Display Date
   function displayDate(d) {
@@ -84,113 +88,109 @@ const Weather = () => {
   };
 
   // Handeling form submit
-  const handleChange = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    gettingOneCallData();
-    gettingDetails();
-    gettingLanLon();
     console.log("click");
   };
 
   return (
     <>
       <main>
-        <form onSubmit={handleChange}>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button>click</button>
         </form>
 
-        {lan !== undefined && cordData.daily !== undefined ? (
+        {local.loaded ? (
           <>
-            {/* <h1>{lan.lon} {lan.lat}</h1> */}
-            <section className="top">
-              {/* <h1>
-            {data.name + ","} {data.sys?.country} 
-          </h1> */}
-              {cordData.daily.map((e, i) => (
-                // onClick={this.handleOnClick.bind(this, index, this.props)}
-                // className = {this.state.activeIndex === index ? "active" : "unactive"}
-                <div
-                  key={e.dt}
-                  className={
-                    active === i
-                      ? "clicked-single-daily-card"
-                      : "single-daily-card"
-                  }
-                  onClick={() => dailyCardClick(i)}
-                >
-                  <p>{displayDate(e.dt)}</p>
-                  <div className="daily-temp">
-                    <p>{Math.round(e.temp.min)}°</p>
-                    <p>{Math.round(e.temp.max)}°</p>
+            {lan && cordData.daily !== undefined ? (
+              <>
+                <section className="top">
+                  {cordData.daily.map((e, i) => (
+                    <div
+                      key={e.dt}
+                      className={
+                        active === i
+                          ? "clicked-single-daily-card"
+                          : "single-daily-card"
+                      }
+                      onClick={() => dailyCardClick(i)}
+                    >
+                      <p>{displayDate(e.dt)}</p>
+                      <div className="daily-temp">
+                        <p>{Math.round(e.temp.min)}°</p>
+                        <p>{Math.round(e.temp.max)}°</p>
+                      </div>
+                      <div className="daily-img">
+                        <img
+                          src={`https://openweathermap.org/img/wn/${e?.weather[0]?.icon}@2x.png`}
+                          alt=""
+                        />
+                      </div>
+                      <p>{e.weather[0]?.main}</p>
+                    </div>
+                  ))}
+                </section>
+
+                <section className="bottom">
+                  <div className="current-temp-img">
+                    <strong>{Math.round(data.main?.temp)}°C</strong>
+                    <div className="current-img">
+                      <img
+                        src={`https://openweathermap.org/img/wn/${cordData.current?.weather[0]?.icon}@2x.png`}
+                        alt=""
+                      />
+                    </div>
                   </div>
-                  <div className="daily-img">
-                    <img
-                      src={`https://openweathermap.org/img/wn/${e?.weather[0]?.icon}@2x.png`}
-                      alt=""
-                    />
+
+                  <div>
+                    <h1>Graph</h1>
                   </div>
-                  <p>{e.weather[0]?.main}</p>
-                </div>
-              ))}
-            </section>
 
-            <section className="bottom">
-              <div className="current-temp-img">
-                <strong>{Math.round(cordData.current.feels_like)}°C</strong>
-                <div className="current-img">
-                  <img
-                    src={`https://openweathermap.org/img/wn/${cordData.current?.weather[0]?.icon}@2x.png`}
-                    alt=""
-                  />
-                </div>
-              </div>
+                  <div className="hum-Pre">
+                    <div className="pressure">
+                      <strong>Pressure</strong>
+                      <p>{cordData.current.pressure}pha</p>
+                    </div>
+                    <div className="humidity">
+                      <strong>Humidity</strong>
+                      <p>{cordData.current.humidity}%</p>
+                    </div>
+                  </div>
 
-              <div>
-                <h1>Graph</h1>
-              </div>
+                  <div className="sun-SetRise">
+                    <div className="sunrise">
+                      <strong>Sunrise</strong>
+                      <p>
+                        {new Date(cordData.current.sunrise * 1e3)
+                          .toLocaleTimeString()
+                          .slice(0, -6) + "am"}
+                      </p>
+                    </div>
+                    <div className="sunset">
+                      <strong>Sunset</strong>
+                      <p>
+                        {new Date(cordData.current.sunset * 1e3)
+                          .toLocaleTimeString()
+                          .slice(0, -6) + "pm"}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="hum-Pre">
-                <div className="pressure">
-                  <strong>Pressure</strong>
-                  <p>{cordData.current.pressure}pha</p>
-                </div>
-                <div className="humidity">
-                  <strong>Humidity</strong>
-                  <p>{cordData.current.humidity}%</p>
-                </div>
-              </div>
-
-              <div className="sun-SetRise">
-                <div className="sunrise">
-                  <strong>Sunrise</strong>
-                  <p>
-                    {new Date(cordData.current.sunrise * 1e3)
-                      .toLocaleTimeString()
-                      .slice(0, -6) + "am"}
-                  </p>
-                </div>
-                <div className="sunset">
-                  <strong>Sunset</strong>
-                  <p>
-                    {new Date(cordData.current.sunset * 1e3)
-                      .toLocaleTimeString()
-                      .slice(0, -6) + "pm"}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <p>Graph</p>
-              </div>
-            </section>
+                  <div>
+                    <p>Graph</p>
+                  </div>
+                </section>
+              </>
+            ) : (
+              ""
+            )}
           </>
         ) : (
-          "Not Found"
+          ""
         )}
       </main>
     </>
