@@ -3,6 +3,15 @@ import GetUserLocation from "./GetUserLocation";
 import "./weather.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { BsSearch } from "react-icons/bs";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 const Weather = () => {
   const [data, setData] = useState([]);
@@ -12,6 +21,7 @@ const Weather = () => {
   const [active, setActive] = useState(0);
   const local = GetUserLocation();
   const [inputStyle, setInputStyle] = useState(false);
+  const [hourly, setHourly] = useState([]);
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
@@ -21,12 +31,14 @@ const Weather = () => {
   // Getting Onecall Data
   useEffect(() => {
     fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lan?.lat}&lon=${lan?.lon}&units=metric&exclude=hourly,minutely&appid=${weatherAPI.key}`
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lan?.lat}&lon=${lan?.lon}&units=metric&exclude=minutely&appid=${weatherAPI.key}`
     )
       .then((res) => res.json())
       .then((res) => {
         setCordData(res);
         console.log("onecall:", res);
+        setHourly(res.hourly);
+        console.log("hourly:", res.hourly);
       })
       .catch((error) => {
         console.log(error);
@@ -164,9 +176,30 @@ const Weather = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h1>Graph</h1>
-                  </div>
+                  <AreaChart
+                    width={650}
+                    height={300}
+                    data={hourly.slice(0, 24)}
+                    wrapperStyle={{
+                      top: 40,
+                      right: 20,
+                      backgroundColor: "#f5f5f5",
+                      border: "10px solid #d5d5d5",
+                      borderRadius: 3,
+                      lineHeight: "40px",
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey={hourly.id + 5} />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="temp"
+                      stroke="#008ffb"
+                      fill="#bbe1fe"
+                    />
+                  </AreaChart>
 
                   <div className="hum-Pre">
                     <div className="pressure">
