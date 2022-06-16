@@ -8,13 +8,56 @@ body{
     max-width: 678px;
     margin: auto;
     padding: 10px;
-    /* border: 1px solid red; */
+
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+form .input-box{
+    padding: 10px;
+    height: 50px;
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.input-box input {
+    position: absolute;
+    left: 50px;
+    right: 50px;
+    height: calc(100% - 20px);
+    padding: 0 15px;
+    font-size: 22px;
+    font-weight: 500;
+    border: 0;
+    outline: none;
+}
+
+
+.input-box .map-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    font-size: 24px;
+    transform: translateY(-50%)
+}
+
+.input-box .search-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    font-size: 24px;
+    transform: translateY(-50%)
 }
 
 
 /* Top section */
 main .top {
-    /* width: calc(100% + 50px); */
     display: flex;
     gap: 5px;
     overflow: auto;
@@ -31,7 +74,6 @@ main .top {
     height: 50px;
     object-fit: contain;
     margin: -10px 0;
-    /* border: 1px solid red; */
 }
 
  .top .single-daily-card{
@@ -61,37 +103,29 @@ main .top {
 .top .daily-temp{
     display: flex;
     justify-content: space-between;
-    /* border: 1px solid red; */
 }
-
-
 
 /* Bottom Section */
 main .bottom{
-    margin-top: 20px;
     display: flex;
     gap: 20px;
     flex-direction: column;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     padding: 20px 20px 10px;
     border-radius: 5px;
 }
-
 
 
 .current-temp-img{
     display: flex;
     justify-content: start;
     align-items: center;
-    /* border: 1px solid red; */
 }
 
 .current-img img{
     max-width:70px;
     height: 70px;
     object-fit: contain;
-    /* margin: -10px 0; */
-    /* border: 1px solid red; */
 }
 
  .hum-Pre{

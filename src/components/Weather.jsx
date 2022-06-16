@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import GetUserLocation from "./GetUserLocation";
 import "./weather.css";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { BsSearch } from "react-icons/bs";
 
 const Weather = () => {
   const [data, setData] = useState([]);
@@ -9,6 +11,7 @@ const Weather = () => {
   const [lan, setLan] = useState({});
   const [active, setActive] = useState(0);
   const local = GetUserLocation();
+  const [inputStyle, setInputStyle] = useState(false);
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
@@ -93,15 +96,30 @@ const Weather = () => {
     console.log("click");
   };
 
+  const inPutBox = () => {
+    setInputStyle((current) => !current);
+  };
+
   return (
     <>
       <main>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div
+            className="input-box"
+            onClick={inPutBox}
+            style={{
+              border: inputStyle ? "2px solid #131313" : "none",
+            }}
+          >
+            <FaMapMarkerAlt className="map-icon" />
+            <input
+              type="text"
+              placeholder="...Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <BsSearch className="search-icon" />
+          </div>
         </form>
 
         {local.loaded ? (
@@ -121,8 +139,8 @@ const Weather = () => {
                     >
                       <p>{displayDate(e.dt)}</p>
                       <div className="daily-temp">
-                        <p>{Math.round(e.temp.min)}°</p>
                         <p>{Math.round(e.temp.max)}°</p>
+                        <p>{Math.round(e.temp.min)}°</p>
                       </div>
                       <div className="daily-img">
                         <img

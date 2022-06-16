@@ -1,4 +1,5 @@
 import "./App.css";
+// import Chart from "./components/Chart";
 // import Copy from "./components/Copy";
 import Weather from "./components/Weather";
 // import GetData from "./components/GetData";
@@ -10,6 +11,8 @@ function App() {
       <Weather />
       {/* <Copy /> */}
       {/* <GetData /> */}
+
+      {/* <Chart /> */}
     </div>
   );
 }
