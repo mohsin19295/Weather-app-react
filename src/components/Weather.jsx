@@ -167,7 +167,7 @@ const Weather = () => {
                   </div>
                 </div>
 
-                {/* <div className="chart">
+                <div className="chart">
                   <ResponsiveContainer>
                     <AreaChart data={hourly.slice(10, 24)}>
                       <XAxis Key={new Date(hourly.dt).getHours()} />
@@ -180,7 +180,7 @@ const Weather = () => {
                       />
                     </AreaChart>
                   </ResponsiveContainer>
-                </div> */}
+                </div>
 
                 <div className="hum-Pre">
                   <div className="pressure">
