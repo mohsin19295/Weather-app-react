@@ -10,7 +10,6 @@ import {
   AreaChart,
   Area,
   XAxis,
-  YAxis,
   Tooltip,
   CartesianGrid,
 } from "recharts";
@@ -19,11 +18,9 @@ const Weather = () => {
   const [data, setData] = useState([]);
   const [cordData, setCordData] = useState([]);
   const [query, setQuery] = useState("delhi");
-  const [lan, setLan] = useState({});
   const [active, setActive] = useState(0);
   const local = GetUserLocation();
   const [inputStyle, setInputStyle] = useState(false);
-  const [hourly, setHourly] = useState([]);
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
@@ -33,32 +30,18 @@ const Weather = () => {
   // Getting Onecall Data
   useEffect(() => {
     fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${lan?.lat}&lon=${lan?.lon}&units=metric&exclude=minutely&appid=${weatherAPI.key}`
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord?.lat}&lon=${data.coord?.lon}&units=metric&exclude=minutely&appid=${weatherAPI.key}`
     )
       .then((res) => res.json())
       .then((res) => {
         setCordData(res);
         console.log("onecall:", res);
-        setHourly(res.hourly);
-        console.log("hourly:", res.hourly);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [lan?.lat, lan?.lon]);
+  }, [data.coord?.lat, data.coord?.lon]);
 
-  // For Lattitude and Longitude
-  useEffect(() => {
-    fetch(`${weatherAPI.baseUrl}q=${query}&appid=${weatherAPI.key}`)
-      .then((res) => res.json())
-      .then((res) => {
-        console.log("latAndLon:", res.coord);
-        setLan(res.coord);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [query]);
 
   //  For getting One CallData;
   useEffect(() => {
@@ -68,7 +51,7 @@ const Weather = () => {
       .then((res) => res.json())
       .then((res) => {
         setData(res);
-        console.log("details", res);
+        console.log("data", res);
       })
       .catch((err) => {
         console.log(err);
@@ -164,7 +147,7 @@ const Weather = () => {
         </form>
         {local.loaded ? (
           <>
-            {lan && cordData.daily !== undefined ? (
+            {data.sys?.country === "IN" && cordData.daily !== undefined ? (
               <>
                 <section className="top">
                   {cordData.daily.map((e, i) => (
@@ -204,9 +187,8 @@ const Weather = () => {
                     </div>
                   </div>
 
-                  <div className="chart">
-                    <ResponsiveContainer>
-                      <AreaChart data={hourly.slice(0, 24)}>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={cordData?.hourly.slice(0, 24)}>
                         <Area
                           activeDot={{ strokeWidth: 2, r: 7 }}
                           type="monotone"
@@ -238,7 +220,6 @@ const Weather = () => {
                         <CartesianGrid opacity={0.8} vertical={false} />
                       </AreaChart>
                     </ResponsiveContainer>
-                  </div>
 
                   <div className="hum-Pre">
                     <div className="pressure">
@@ -255,7 +236,7 @@ const Weather = () => {
                     <div className="sunrise">
                       <strong>Sunrise</strong>
                       <p>
-                        {new Date(cordData.current.sunrise * 1e3)
+                        {new Date(data.sys?.sunrise * 1e3)
                           .toLocaleTimeString()
                           .slice(0, -6) + "am"}
                       </p>
@@ -263,7 +244,7 @@ const Weather = () => {
                     <div className="sunset">
                       <strong>Sunset</strong>
                       <p>
-                        {new Date(cordData.current.sunset * 1e3)
+                        {new Date(data.sys?.sunset * 1e3)
                           .toLocaleTimeString()
                           .slice(0, -6) + "pm"}
                       </p>
