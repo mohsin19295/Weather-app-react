@@ -5,7 +5,15 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { BsSearch } from "react-icons/bs";
 import "./weather.css";
 
-import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 const Weather = () => {
   const [data, setData] = useState([]);
@@ -13,6 +21,7 @@ const Weather = () => {
   const [query, setQuery] = useState("delhi");
   const [lan, setLan] = useState({});
   const [active, setActive] = useState(0);
+  const local = GetUserLocation();
   const [inputStyle, setInputStyle] = useState(false);
   const [hourly, setHourly] = useState([]);
 
@@ -105,6 +114,33 @@ const Weather = () => {
     setInputStyle((current) => !current);
   };
 
+  function CustomTooltip({ active, payload, label }) {
+    if (active) {
+      return (
+        <div className="chart-desc">
+          <div>
+            <p>
+              {new Date(label * 1000).getHours() === 0
+                ? `${12} am`
+                : new Date(label * 1000).getHours() === 12
+                ? `${12} pm`
+                : new Date(label * 1000).getHours() > 0 &&
+                  new Date(label * 1000).getHours() < 12
+                ? `${new Date(label * 1000).getHours() % 12} am`
+                : `${new Date(label * 1000).getHours() % 12} pm`}
+            </p>
+          </div>
+          <div>
+            <p>
+              Tempreture: <strong>{Math.round(payload[0].value)}°C</strong>
+            </p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
     <>
       <main>
@@ -126,101 +162,126 @@ const Weather = () => {
             <BsSearch className="search-icon" />
           </div>
         </form>
-        <>
-          {lan && cordData.daily !== undefined ? (
-            <>
-              <section className="top">
-                {cordData.daily.map((e, i) => (
-                  <div
-                    key={e.dt}
-                    className={
-                      active === i
-                        ? "clicked-single-daily-card"
-                        : "single-daily-card"
-                    }
-                    onClick={() => dailyCardClick(i)}
-                  >
-                    <p>{displayDate(e.dt)}</p>
-                    <div className="daily-temp">
-                      <p>{Math.round(e.temp.max)}°</p>
-                      <p>{Math.round(e.temp.min)}°</p>
+        {local.loaded ? (
+          <>
+            {lan && cordData.daily !== undefined ? (
+              <>
+                <section className="top">
+                  {cordData.daily.map((e, i) => (
+                    <div
+                      key={e.dt}
+                      className={
+                        active === i
+                          ? "clicked-single-daily-card"
+                          : "single-daily-card"
+                      }
+                      onClick={() => dailyCardClick(i)}
+                    >
+                      <p>{displayDate(e.dt)}</p>
+                      <div className="daily-temp">
+                        <p>{Math.round(e.temp.max)}°</p>
+                        <p>{Math.round(e.temp.min)}°</p>
+                      </div>
+                      <div className="daily-img">
+                        <img
+                          src={`https://openweathermap.org/img/wn/${e?.weather[0]?.icon}@2x.png`}
+                          alt=""
+                        />
+                      </div>
+                      <p>{e.weather[0]?.main}</p>
                     </div>
-                    <div className="daily-img">
+                  ))}
+                </section>
+
+                <section className="bottom">
+                  <div className="current-temp-img">
+                    <strong>{Math.round(data.main?.temp)}°C</strong>
+                    <div className="current-img">
                       <img
-                        src={`https://openweathermap.org/img/wn/${e?.weather[0]?.icon}@2x.png`}
+                        src={`https://openweathermap.org/img/wn/${cordData.current?.weather[0]?.icon}@2x.png`}
                         alt=""
                       />
                     </div>
-                    <p>{e.weather[0]?.main}</p>
                   </div>
-                ))}
-              </section>
 
-              <section className="bottom">
-                <div className="current-temp-img">
-                  <strong>{Math.round(data.main?.temp)}°C</strong>
-                  <div className="current-img">
-                    <img
-                      src={`https://openweathermap.org/img/wn/${cordData.current?.weather[0]?.icon}@2x.png`}
-                      alt=""
-                    />
-                  </div>
-                </div>
+                  <div className="chart">
+                    <ResponsiveContainer>
+                      <AreaChart data={hourly.slice(0, 24)}>
+                        <Area
+                          activeDot={{ strokeWidth: 2, r: 7 }}
+                          type="monotone"
+                          dataKey="temp"
+                          stroke="#008ffb"
+                          strokeWidth="5"
+                          fill="#bbe1fe"
+                        />
+                        <XAxis
+                          axisLine={false}
+                          tickLine={false}
+                          dataKey="dt"
+                          tickFormatter={(dt) => {
+                            if (
+                              new Date(dt * 1000).getHours() === 12 ||
+                              new Date(dt * 1000).getHours() === 0
+                            ) {
+                              return 12;
+                            }
 
-                <div className="chart">
-                  <ResponsiveContainer>
-                    <AreaChart data={hourly.slice(10, 24)}>
-                      <XAxis Key={new Date(hourly.dt).getHours()} />
-                      <Tooltip />
-                      <Area
-                        type="monotone"
-                        dataKey="temp"
-                        stroke="#008ffb"
-                        fill="#bbe1fe"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                            return new Date(dt * 1000).getHours() % 12;
+                          }}
+                        />
 
-                <div className="hum-Pre">
-                  <div className="pressure">
-                    <strong>Pressure</strong>
-                    <p>{cordData.current.pressure}pha</p>
+                        <Tooltip
+                          content={<CustomTooltip />}
+                          viewBox={{ x: 0, y: 0, width: 400, height: 400 }}
+                        />
+                        <CartesianGrid opacity={0.8} vertical={false} />
+                      </AreaChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div className="humidity">
-                    <strong>Humidity</strong>
-                    <p>{cordData.current.humidity}%</p>
-                  </div>
-                </div>
 
-                <div className="sun-SetRise">
-                  <div className="sunrise">
-                    <strong>Sunrise</strong>
-                    <p>
-                      {new Date(cordData.current.sunrise * 1e3)
-                        .toLocaleTimeString()
-                        .slice(0, -6) + "am"}
-                    </p>
+                  <div className="hum-Pre">
+                    <div className="pressure">
+                      <strong>Pressure</strong>
+                      <p>{cordData.current.pressure}pha</p>
+                    </div>
+                    <div className="humidity">
+                      <strong>Humidity</strong>
+                      <p>{cordData.current.humidity}%</p>
+                    </div>
                   </div>
-                  <div className="sunset">
-                    <strong>Sunset</strong>
-                    <p>
-                      {new Date(cordData.current.sunset * 1e3)
-                        .toLocaleTimeString()
-                        .slice(0, -6) + "pm"}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="img-graph">
-                  <img src={myImg} alt="" />
-                </div>
-              </section>
-            </>
-          ) : (
-            ""
-          )}
-        </>
+                  <div className="sun-SetRise">
+                    <div className="sunrise">
+                      <strong>Sunrise</strong>
+                      <p>
+                        {new Date(cordData.current.sunrise * 1e3)
+                          .toLocaleTimeString()
+                          .slice(0, -6) + "am"}
+                      </p>
+                    </div>
+                    <div className="sunset">
+                      <strong>Sunset</strong>
+                      <p>
+                        {new Date(cordData.current.sunset * 1e3)
+                          .toLocaleTimeString()
+                          .slice(0, -6) + "pm"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="img-graph">
+                    <img src={myImg} alt="" />
+                  </div>
+                </section>
+              </>
+            ) : (
+              ""
+            )}
+          </>
+        ) : (
+          ""
+        )}
       </main>
     </>
   );
