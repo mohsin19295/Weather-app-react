@@ -21,6 +21,7 @@ const Weather = () => {
   const [active, setActive] = useState(0);
   const local = GetUserLocation();
   const [inputStyle, setInputStyle] = useState(false);
+  
 
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
