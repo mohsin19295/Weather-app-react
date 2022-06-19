@@ -1,3 +1,28 @@
+# Weather APP
+#### The project was created using <b>Reactjs</b>. <b>CSS</b> was used for styling, and an npm package called <b>recharts</b> was used to create charts.
+- It shows the <b>current temperature</b>. 
+- <b>Daily minimum and maximum temperature</b> on top in a row.
+- <b>Hourly temperature</b> in the graph.
+- <b>Pressure</b> in the hPa unit.
+- <b>Humidity</b> in the percentage unit.
+- <b>Sunrise</b> and <b>Sunset</b> time.
+
+### It shows all city's names with respective their state names.
+
+![weather-autosuggetion](https://user-images.githubusercontent.com/86405170/174495662-de7a8dc4-db4f-4b60-a673-603732ed3f07.PNG)
+
+ ### Once you click any city name, it will display the result for the same city.
+ 
+![weather-input-daily](https://user-images.githubusercontent.com/86405170/174495130-9bdd45e7-e69b-4e11-a4e5-99e0542a15eb.PNG)
+
+ ### This is the graph for hourly temperature.
+ 
+![weather-hourly-temp-chart](https://user-images.githubusercontent.com/86405170/174495671-e17fe92e-4d61-43ef-af1c-c20355e250ea.PNG)
+
+### This is for pressure,  including a graph for sunrise and sunset.
+
+![weather-sun](https://user-images.githubusercontent.com/86405170/174495669-b7ec8624-effc-455c-8ac7-abba0d1da32f.PNG)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
