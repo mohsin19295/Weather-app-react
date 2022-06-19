@@ -55,6 +55,40 @@ form .input-box{
     transform: translateY(-50%)
 }
 
+/* Display Data */
+.bulk-data-container{
+   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+   border-radius: 5px;
+}
+
+.bulk-data{
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.336);
+    cursor: pointer;
+}
+
+.bulk-data  *{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.bulk-data-info >p{
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+@media screen and (max-width:300px)  {
+    .bulk-data{
+        font-size: 14px;
+        padding: 10px 5%;
+    }
+    .input-box input {
+        font-size: 18px;
+    }
+}
 
 /* Top section */
 main .top {
@@ -191,7 +225,6 @@ main .chart-desc{
 .chart-desc div{
     padding:5px 10px;
     width: 100%;
-    /* border: 1px solid black; */
 }
 
 .chart-desc div:nth-child(1){

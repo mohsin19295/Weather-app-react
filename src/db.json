@@ -1,5 +1,5 @@
-{
-    "details": [
+[
+     
         {
             "city": "Delhi",
             "state": "Delhi"
@@ -737,4 +737,3 @@
             "state": "Telangana"
         }
     ]
-}
