@@ -1,5 +1,5 @@
 # Weather APP
-#### The project was created using `Reactjs`. `CSS` was used for styling, and an npm package called `recharts` was used to create charts. Once user open the app, it will ask for Location Permission. It is fully responsive to any device.
+#### The project was created using `Reactjs`. `CSS` was used for styling, and an npm package called `recharts` was used to create charts. Once the user opens the app, it will ask for `Location Permission`. It is fully responsive to any device.
 - It shows the <b>current temperature</b>. 
 - <b>Daily minimum and maximum temperature</b> on top in a row.
 - <b>Hourly temperature</b> in the graph.
@@ -7,11 +7,11 @@
 - <b>Humidity</b> in the percentage unit.
 - <b>Sunrise</b> and <b>Sunset</b> time.
 
-### It shows all city's names with respective their state names.
+### It shows all city's names with respective their state names. User can also search by city or state name
 
 ![weather-autosuggetion](https://user-images.githubusercontent.com/86405170/174495662-de7a8dc4-db4f-4b60-a673-603732ed3f07.PNG)
 
- ### Once you click any city name, it will display the result for the same city.
+ ### Once you click any city name or search icon after typing the city name, it will display the result for the same city.
  
 ![weather-input-daily](https://user-images.githubusercontent.com/86405170/174495130-9bdd45e7-e69b-4e11-a4e5-99e0542a15eb.PNG)
 
