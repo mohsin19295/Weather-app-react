@@ -196,9 +196,12 @@ main .bottom{
     flex-direction: column;
 }
 
-.sunrise p, .sunset p{
-    font-size: 17px;
-    font-weight: 400;
+.sunrise {
+    align-items: flex-start;
+}
+
+.sunset {
+    align-items: flex-end;
 }
 
 .current-temp-img strong{

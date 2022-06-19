@@ -293,7 +293,6 @@ const Weather = () => {
                   interval="preserveStartEnd"
                   axisLine={false}
                   tickLine={false}
-                  angle={15}
                   dataKey="dt"
                   tickFormatter={(dt) => {
                     if (convertString(dt) === 12 || convertString(dt) === 0) {
@@ -340,9 +339,9 @@ const Weather = () => {
                 </p>
               </div>
             </div>
-            
+
                     {/* Sunset-Sunrise Chart */}
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={180}>
                 <AreaChart data={sunData}>
                   <defs>
                     <linearGradient id="sun-color" x1="0" y1="0" x2="0" y2="1">
