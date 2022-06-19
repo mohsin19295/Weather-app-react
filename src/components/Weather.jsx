@@ -26,7 +26,7 @@ const Weather = () => {
   const local = GetUserLocation();
 
   let weatherAPI = {
-    key: "3347991dc1e65cace7187b19619dcbfc",
+    key: "daf81f9bedba9c24a0f37473fadff8aa",
     baseUrl: "https://api.openweathermap.org/data/2.5/weather?",
   };
 
@@ -60,8 +60,8 @@ const Weather = () => {
       });
   }, [query]);
 
-  // Display Date
-  function displayDate(d) {
+  //For  displaying Day
+  const displayDate = (d)=> {
     let day = new Date(d * 1000).getDay();
 
     switch (day) {
@@ -84,24 +84,21 @@ const Weather = () => {
   }
 
   // Convert String to Hour
-  function convertString(d) {
+  const convertString =(d) =>{
     return new Date(d * 1000).getHours();
   }
 
+  // Daily forcast box style handeling onClick
   const dailyCardClick = (index) => {
     setActive(index);
   };
 
-  // Handeling form submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("click");
-  };
-
+  // Input box style handeling onClick
   const inPutBox = () => {
     setInputStyle((current) => !current);
   };
 
+  // Autosuggetion data handeling onChange
   const filterBulkData = (text) => {
     let matches = Bulk.filter((x) => {
       const regex = new RegExp(`${text}`, "gi");
@@ -110,7 +107,24 @@ const Weather = () => {
     setDisplay(matches);
   };
 
-  function CustomTooltip({ active, payload, label }) {
+  // Input box handeling onChange
+  const handleChange = (e) => {
+    filterBulkData(e.target.value);
+    setQuery(e.target.value);
+    setDisplayMode(true);
+  };
+
+  // Autosuggetion handeling onClick
+  const setSearch = (city) => {
+    const edit = Bulk.filter((item) => {
+      return item.city === city;
+    });
+    setQuery(edit[0].city);
+    setDisplayMode((current) => !current);
+  };
+
+  // Chart tooltip handleing onHover
+  const CustomTooltip = ({ active, payload, label }) => {
     if (active) {
       return (
         <div className="chart-desc">
@@ -134,25 +148,12 @@ const Weather = () => {
       );
     }
     return null;
-  }
-
-  const handleChange = (e) => {
-    filterBulkData(e.target.value);
-    setQuery(e.target.value);
-    setDisplayMode((current) => !current);
-  };
-
-  const setSearch = (city) => {
-    const edit = Bulk.filter((item) => {
-      return item.city === city;
-    });
-    setQuery(edit[0].city);
-    setDisplayMode((current) => !current);
   };
 
   return (
     <main>
-      <form onSubmit={handleSubmit}>
+      {/* Top input-box form */}
+      <form onSubmit={(e)=> e.preventDefault()}>
         <div
           className="input-box"
           onClick={inPutBox}
@@ -167,10 +168,14 @@ const Weather = () => {
             onChange={handleChange}
             value={query}
           />
-          <BsSearch className="search-icon" />
+          <BsSearch
+            className="search-icon"
+            onClick={() => setDisplayMode((current) => !current)}
+          />
         </div>
       </form>
 
+      {/* For auto suggestions */}
       <div className="bulk-data-container">
         {displayMode &&
           display.map((e, i) => (
@@ -192,6 +197,7 @@ const Weather = () => {
 
       {local.loaded && data.sys?.country === "IN" && cordData.daily && (
         <>
+          {/* Daily Forcast Box*/}
           <section className="top">
             {cordData.daily.map((e, i) => (
               <div
@@ -219,6 +225,7 @@ const Weather = () => {
             ))}
           </section>
 
+          {/* Mid-n-Bottom Box */}
           <section className="bottom">
             <div className="current-temp-img">
               <strong>{Math.round(data.main?.temp)}°C</strong>
@@ -230,6 +237,7 @@ const Weather = () => {
               </div>
             </div>
 
+            {/* Chart */}
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={cordData?.hourly.slice(0, 12)}>
                 <Area
@@ -240,37 +248,39 @@ const Weather = () => {
                   strokeWidth="5"
                   fill="#bbe1fe"
                 />
+
                 <XAxis
+                  interval="preserveStartEnd"
                   axisLine={false}
                   tickLine={false}
+                  angle={15}
                   dataKey="dt"
                   tickFormatter={(dt) => {
                     if (convertString(dt) === 12 || convertString(dt) === 0) {
                       return 12;
                     }
-
                     return convertString(dt) % 12;
                   }}
                 />
 
-                <Tooltip
-                  content={<CustomTooltip />}
-                  viewBox={{ x: 0, y: 0, width: 400, height: 400 }}
-                />
+                <Tooltip content={<CustomTooltip />} />
                 <CartesianGrid opacity={0.8} vertical={false} />
               </AreaChart>
             </ResponsiveContainer>
 
+            {/* Humidity and Pressure */}
             <div className="hum-Pre">
               <div className="pressure">
                 <strong>Pressure</strong>
-                <p>{cordData.current.pressure}pha</p>
+                <p>{cordData.current.pressure} hPa</p>
               </div>
               <div className="humidity">
                 <strong>Humidity</strong>
-                <p>{cordData.current.humidity}%</p>
+                <p>{cordData.current.humidity} %</p>
               </div>
             </div>
+
+            {/* Sunset and Sunrise */}
 
             <div className="sun-SetRise">
               <div className="sunrise">
