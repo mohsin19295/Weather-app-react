@@ -1,5 +1,5 @@
 # Weather APP
-#### The project was created using <b>Reactjs</b>. <b>CSS</b> was used for styling, and an npm package called <b>recharts</b> was used to create charts.
+#### The project was created using `Reactjs`. `CSS` was used for styling, and an npm package called `recharts` was used to create charts. Once user open the app, it will ask for Location Permission. It is fully responsive to any device.
 - It shows the <b>current temperature</b>. 
 - <b>Daily minimum and maximum temperature</b> on top in a row.
 - <b>Hourly temperature</b> in the graph.
