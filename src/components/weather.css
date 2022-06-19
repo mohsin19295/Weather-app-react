@@ -32,27 +32,26 @@ form .input-box{
     right: 50px;
     height: calc(100% - 20px);
     padding: 0 15px;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 500;
     border: 0;
     outline: none;
 }
 
 
-.input-box .map-icon {
+.input-box .map-icon, .search-icon {
     position: absolute;
     top: 50%;
-    left: 15px;
     font-size: 24px;
     transform: translateY(-50%)
 }
 
-.input-box .search-icon {
-    position: absolute;
-    top: 50%;
+.map-icon{
+    left: 15px;
+}
+
+.search-icon {
     right: 15px;
-    font-size: 24px;
-    transform: translateY(-50%)
 }
 
 /* Display Data */
