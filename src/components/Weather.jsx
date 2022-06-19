@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import GetUserLocation from "./GetUserLocation";
-import myImg from "../graph.PNG";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { BsSearch } from "react-icons/bs";
 import "./weather.css";
@@ -12,6 +11,8 @@ import {
   Area,
   XAxis,
   Tooltip,
+  Legend,
+  linearGradient,
   CartesianGrid,
 } from "recharts";
 
@@ -61,7 +62,7 @@ const Weather = () => {
   }, [query]);
 
   //For  displaying Day
-  const displayDate = (d)=> {
+  const displayDate = (d) => {
     let day = new Date(d * 1000).getDay();
 
     switch (day) {
@@ -81,12 +82,12 @@ const Weather = () => {
         return "Sat";
     }
     return day;
-  }
+  };
 
   // Convert String to Hour
-  const convertString =(d) =>{
+  const convertString = (d) => {
     return new Date(d * 1000).getHours();
-  }
+  };
 
   // Daily forcast box style handeling onClick
   const dailyCardClick = (index) => {
@@ -150,10 +151,49 @@ const Weather = () => {
     return null;
   };
 
+  const sunData = [
+    {
+      sun: `${convertString(data.sys?.sunrise)}:${new Date(
+        data.sys?.sunrise
+      ).getMinutes()} am`,
+      value: 0,
+    },
+    { sun: "", value: 10 },
+    {
+      sun: `${convertString(data.sys?.sunset) - 12}:${new Date(
+        data.sys?.sunset
+      ).getMinutes()} pm`,
+      value: 0,
+    },
+  ];
+
+  const SunTooltip = ({ active, label }) => {
+    if (active) {
+      return (
+        <div>
+          {label.slice(-2) === "am" ? (
+            <div className="sun-graph">
+              <strong>Sunrise</strong>
+              <p>{label}</p>
+            </div>
+          ) : label.slice(-2) === "pm" ? (
+            <div className="sun-graph">
+              <strong>Sunset</strong>
+              <p>{label}</p>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <main>
       {/* Top input-box form */}
-      <form onSubmit={(e)=> e.preventDefault()}>
+      <form onSubmit={(e) => e.preventDefault()}>
         <div
           className="input-box"
           onClick={inPutBox}
@@ -300,10 +340,36 @@ const Weather = () => {
                 </p>
               </div>
             </div>
+            
+                    {/* Sunset-Sunrise Chart */}
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={sunData}>
+                  <defs>
+                    <linearGradient id="sun-color" x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset="20%"
+                        stopColor="#f5e3be"
+                        stopOpacity={0.7}
+                      />
+                      <stop offset="95%" stopColor="#f5e3be" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="sun"
+                    padding={{ left: 30, right: 30 }}
+                    tickLine={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#eccb87"
+                    fillOpacity={1}
+                    fill="url(#sun-color)"
+                  />
+                  <Tooltip content={<SunTooltip />} />
+                </AreaChart>
+              </ResponsiveContainer>
 
-            <div className="img-graph">
-              <img src={myImg} alt="myImg" />
-            </div>
           </section>
         </>
       )}
