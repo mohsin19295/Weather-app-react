@@ -11,7 +11,6 @@ import {
   Area,
   XAxis,
   Tooltip,
-  Legend,
   linearGradient,
   CartesianGrid,
 } from "recharts";
@@ -97,6 +96,10 @@ const Weather = () => {
   // Input box style handeling onClick
   const inPutBox = () => {
     setInputStyle((current) => !current);
+    {
+      !query ? filterBulkData("") : filterBulkData(query);
+    }
+    setDisplayMode(true);
   };
 
   // Autosuggetion data handeling onChange
@@ -196,13 +199,13 @@ const Weather = () => {
       <form onSubmit={(e) => e.preventDefault()}>
         <div
           className="input-box"
-          onClick={inPutBox}
           style={{
             border: inputStyle ? "2px solid #131313" : "none",
           }}
         >
           <FaMapMarkerAlt className="map-icon" />
           <input
+            onClick={inPutBox}
             type="text"
             placeholder="...Search"
             onChange={handleChange}
@@ -340,35 +343,30 @@ const Weather = () => {
               </div>
             </div>
 
-                    {/* Sunset-Sunrise Chart */}
-              <ResponsiveContainer width="100%" height={180}>
-                <AreaChart data={sunData}>
-                  <defs>
-                    <linearGradient id="sun-color" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="20%"
-                        stopColor="#f5e3be"
-                        stopOpacity={0.7}
-                      />
-                      <stop offset="95%" stopColor="#f5e3be" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    dataKey="sun"
-                    padding={{ left: 30, right: 30 }}
-                    tickLine={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#eccb87"
-                    fillOpacity={1}
-                    fill="url(#sun-color)"
-                  />
-                  <Tooltip content={<SunTooltip />} />
-                </AreaChart>
-              </ResponsiveContainer>
-
+            {/* Sunset-Sunrise Chart */}
+            <ResponsiveContainer width="100%" height={160}>
+              <AreaChart data={sunData}>
+                <defs>
+                  <linearGradient id="sun-color" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="20%" stopColor="#f5e3be" stopOpacity={0.7} />
+                    <stop offset="95%" stopColor="#f5e3be" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="sun"
+                  padding={{ left: 30, right: 30 }}
+                  tickLine={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#eccb87"
+                  fillOpacity={1}
+                  fill="url(#sun-color)"
+                />
+                <Tooltip content={<SunTooltip />} />
+              </AreaChart>
+            </ResponsiveContainer>
           </section>
         </>
       )}
