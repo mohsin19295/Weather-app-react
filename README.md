@@ -1,7 +1,6 @@
 # <p align="center">Weather APP</p>
 
 #### <p align="center">The project was created using `Reactjs`. `CSS` was used for styling, and an npm package called `recharts` was used to create charts. Once the user opens the app, it will ask for `Location Permission`. It is fully responsive to any device.<p/>
-<hr/>
 
 - It shows the <b>current temperature</b>. 
 - <b>Daily minimum and maximum temperature</b> on top in a row.
