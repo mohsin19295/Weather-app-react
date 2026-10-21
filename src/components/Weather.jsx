@@ -26,24 +26,58 @@ const Weather = () => {
   const local = GetUserLocation();
 
   let weatherAPI = {
-    key: "daf81f9bedba9c24a0f37473fadff8aa",
+    key: "3347991dc1e65cace7187b19619dcbfc",
     baseUrl: "https://api.openweathermap.org/data/2.5/weather?",
   };
 
-  // Getting Onecall Data
+  // 5-day / 3-hour forecast. One Call 2.5 was removed, and One Call 3.0
+  // needs a separate subscription, so this free forecast endpoint is used instead.
   useEffect(() => {
+    const lat = data.coord?.lat;
+    const lon = data.coord?.lon;
+    if (lat == null || lon == null) return;
+
     fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord?.lat}&lon=${data.coord?.lon}&units=metric&exclude=minutely&appid=${weatherAPI.key}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${weatherAPI.key}`
     )
       .then((res) => res.json())
       .then((res) => {
-        setCordData(res);
-        console.log("onecall:", res);
+        const list = res.list || [];
+        const byDay = new Map();
+
+        list.forEach((item) => {
+          const dayKey = new Date(item.dt * 1000).toDateString();
+          if (!byDay.has(dayKey)) byDay.set(dayKey, []);
+          byDay.get(dayKey).push(item);
+        });
+
+        const daily = Array.from(byDay.values()).map((slots) => {
+          const temps = slots.map((slot) => slot.main.temp);
+          const midday = slots[Math.floor(slots.length / 2)];
+          return {
+            dt: slots[0].dt,
+            temp: { max: Math.max(...temps), min: Math.min(...temps) },
+            weather: midday.weather,
+          };
+        });
+
+        setCordData({
+          current: {
+            weather: data.weather,
+            pressure: data.main?.pressure,
+            humidity: data.main?.humidity,
+          },
+          hourly: list.slice(0, 12).map((item) => ({
+            dt: item.dt,
+            temp: item.main.temp,
+          })),
+          daily,
+        });
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [data.coord?.lat, data.coord?.lon]);
+  }, [data]);
 
   //  For getting One CallData;
   useEffect(() => {
@@ -259,7 +293,7 @@ const Weather = () => {
                 </div>
                 <div className="daily-img">
                   <img
-                    src={`https://openweathermap.org/img/wn/${e?.weather[0]?.icon}@2x.png`}
+                    src={`https://openweathermap.org/payload/api/media/file/${e?.weather[0]?.icon}.png`}
                     alt=""
                   />
                 </div>
@@ -274,7 +308,7 @@ const Weather = () => {
               <strong>{Math.round(data.main?.temp)}°C</strong>
               <div className="current-img">
                 <img
-                  src={`https://openweathermap.org/img/wn/${cordData.current?.weather[0]?.icon}@2x.png`}
+                  src={`https://openweathermap.org/payload/api/media/file/${cordData.current?.weather[0]?.icon}.png`}
                   alt=""
                 />
               </div>
