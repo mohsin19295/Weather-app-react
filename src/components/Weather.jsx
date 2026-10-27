@@ -25,6 +25,7 @@ const Weather = () => {
   const [displayMode, setDisplayMode] = useState(true);
   const local = GetUserLocation();
 
+  
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
     baseUrl: "https://api.openweathermap.org/data/2.5/weather?",
