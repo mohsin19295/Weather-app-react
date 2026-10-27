@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GetUserLocation from "./GetUserLocation";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { BsSearch } from "react-icons/bs";
@@ -11,7 +11,6 @@ import {
   Area,
   XAxis,
   Tooltip,
-  linearGradient,
   CartesianGrid,
 } from "recharts";
 
@@ -25,7 +24,7 @@ const Weather = () => {
   const [displayMode, setDisplayMode] = useState(true);
   const local = GetUserLocation();
 
-  
+
   let weatherAPI = {
     key: "3347991dc1e65cace7187b19619dcbfc",
     baseUrl: "https://api.openweathermap.org/data/2.5/weather?",
@@ -78,7 +77,7 @@ const Weather = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [data]);
+  }, [data, weatherAPI.key]);
 
   //  For getting One CallData;
   useEffect(() => {
@@ -93,7 +92,7 @@ const Weather = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [query]);
+  }, [query, weatherAPI.baseUrl, weatherAPI.key]);
 
   //For  displaying Day
   const displayDate = (d) => {
@@ -114,8 +113,9 @@ const Weather = () => {
         return "Fri";
       case 6:
         return "Sat";
+      default:
+        return day;
     }
-    return day;
   };
 
   // Convert String to Hour
@@ -131,9 +131,7 @@ const Weather = () => {
   // Input box style handeling onClick
   const inPutBox = () => {
     setInputStyle((current) => !current);
-    {
-      !query ? filterBulkData("") : filterBulkData(query);
-    }
+    filterBulkData(query || "")
     setDisplayMode(true);
   };
 
