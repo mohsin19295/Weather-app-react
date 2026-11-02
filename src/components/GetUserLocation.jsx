@@ -1,39 +1,48 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 const GetUserLocation = () => {
   const [location, setLocation] = useState({
-    loaded: false,
+    status: "idle",
     coordinates: { lon: "", lat: "" },
   });
 
-  const onSuccess = (location) => {
-    setLocation({
-      loaded: true,
-      coordinates: {
-        lon: location.coords.longitude,
-        lat: location.coords.latitude,
-      },
-    });
-  };
-
-  const onError = (error) => {
-    setLocation({
-      loaded: true,
-      error: error,
-    });
-  };
-
-  useEffect(() => {
+  const requestLocation = () => {
     if (!("geolocation" in navigator)) {
-      onError({
-        code: 0,
-        message: "Geolocation not supported",
+      setLocation({
+        status: "error",
+        coordinates: { lon: "", lat: "" },
+        error: { message: "Location is not supported in this browser." },
       });
+      return;
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-  }, []);
 
-  return location;
+    setLocation((prev) => ({
+      ...prev,
+      status: "pending",
+      error: undefined,
+    }));
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocation({
+          status: "ready",
+          coordinates: {
+            lon: pos.coords.longitude,
+            lat: pos.coords.latitude,
+          },
+        });
+      },
+      (error) => {
+        setLocation({
+          status: "error",
+          coordinates: { lon: "", lat: "" },
+          error,
+        });
+      }
+    );
+  };
+
+  return { location, requestLocation };
 };
 
 export default GetUserLocation;
