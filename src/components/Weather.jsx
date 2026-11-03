@@ -315,7 +315,9 @@ const Weather = () => {
                 if (event.key === "Escape") setDisplayMode(false);
               }}
               value={inputValue}
+              role="combobox"
               aria-label="Search city"
+              aria-autocomplete="list"
               aria-expanded={displayMode}
               aria-controls="city-suggestions"
               autoComplete="off"
@@ -342,6 +344,7 @@ const Weather = () => {
                 key={`${item.city}-${item.state}-${index}`}
                 className="bulk-data"
                 role="option"
+                aria-selected={false}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => commitSearch(item.city)}
               >
